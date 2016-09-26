@@ -1,6 +1,6 @@
 $('.btn').click(function() {
     alert('Test');
-    $.ajax("http://nephcurebetaapi.azurewebsites.net/api/v1/users/"+$('.txt').val).done(function(data) {
+    $.ajax("http://nephcurebetaapi.azurewebsites.net/api/v1/users/"+$('.txt').val()).done(function(data) {
         alert('Got Data');
         console.log(data);
         var i, repo;
