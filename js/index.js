@@ -24,7 +24,7 @@
 //     });
 //});
 
-$('#reposHome').bind('pageinit', function(event) {
+$('#reposHome').bind('pagecreate', function(event) {
     loadRepos();
 });
 
