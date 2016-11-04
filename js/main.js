@@ -1,11 +1,11 @@
 $(document).ready(function(){
    	loadFoooterLinks();
-   	if(localStorage.getItem('userInfo') == "null"){
-	   	$.mobile.changePage('index.html#seven');
-	   	//$('#seven').append('<div data-role="header" class="ui-header ui-bar-a" role="banner"><a href="index.html" data-icon="delete" class="ui-btn-left ui-btn ui-shadow ui-btn-corner-all ui-btn-icon-left ui-btn-up-a ui-btn-active" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="a"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Home</span><span class="ui-icon ui-icon-delete ui-icon-shadow">&nbsp;</span></span></a><h1 class="ui-title" role="heading" aria-level="1">Login</h1><a href="index.html" data-icon="check" data-theme="b" class="ui-btn-right ui-btn ui-shadow ui-btn-corner-all ui-btn-icon-left ui-btn-up-b" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Login</span><span class="ui-icon ui-icon-check ui-icon-shadow">&nbsp;</span></span></a></div>').trigger( "create" );
-	} else {
-		$.mobile.changePage('index.html#two');
+   	if ((localStorage.getItem('userInfo') != "null") && (localStorage.getItem('userInfo') != null)) {
+	   	$.mobile.changePage('index.html#two');
 		//$('#seven').append('<div data-role="header" class="ui-header ui-bar-a" role="banner"><a href="index.html" data-icon="delete" class="ui-btn-left ui-btn ui-shadow ui-btn-corner-all ui-btn-icon-left ui-btn-up-a ui-btn-active" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="a"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Home</span><span class="ui-icon ui-icon-delete ui-icon-shadow">&nbsp;</span></span></a><h1 class="ui-title" role="heading" aria-level="1">Login</h1><a href="index.html" data-icon="check" data-theme="b" class="ui-btn-right ui-btn ui-shadow ui-btn-corner-all ui-btn-icon-left ui-btn-up-b" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Logout</span><span class="ui-icon ui-icon-check ui-icon-shadow">&nbsp;</span></span></a></div>').trigger( "create" );
+	} else {
+		$.mobile.changePage('index.html#seven');
+	   	//$('#seven').append('<div data-role="header" class="ui-header ui-bar-a" role="banner"><a href="index.html" data-icon="delete" class="ui-btn-left ui-btn ui-shadow ui-btn-corner-all ui-btn-icon-left ui-btn-up-a ui-btn-active" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="a"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Home</span><span class="ui-icon ui-icon-delete ui-icon-shadow">&nbsp;</span></span></a><h1 class="ui-title" role="heading" aria-level="1">Login</h1><a href="index.html" data-icon="check" data-theme="b" class="ui-btn-right ui-btn ui-shadow ui-btn-corner-all ui-btn-icon-left ui-btn-up-b" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Login</span><span class="ui-icon ui-icon-check ui-icon-shadow">&nbsp;</span></span></a></div>').trigger( "create" );
 	}
 	
    	$('#btn').click(function() {
@@ -68,10 +68,33 @@ $(document).ready(function(){
 	});
 	
 	$('.btnLogin').click(function() {
-		alert('Login');
+		//alert('Login');
+		var loginToken = "";
+		var creds = btoa($('#txtusername').val()+":"+$('#txtpassword').val()); //Y2xpZW50OnNlY3JldA==
+		$.ajax({
+		  type:"POST",
+		  url: "http://nephcurebetaapi.azurewebsites.net/connect/token",
+		  data: "grant_type=client_credentials&scope=api1",
+	      beforeSend: function (xhr){ 
+	        xhr.setRequestHeader('Authorization', "Basic "+creds); 
+	      },
+		  contentType: "application/x-www-form-urlencoded; charset=utf-8",
+		  success: function(data) {
+		    //alert('success');
+		    //alert(data.access_token);
+		    setLoginToken(data.access_token);
+		  },
+	      error: function (xhr, ajaxOptions, thrownError) {
+	     	alert('Error Logging In');
+	     	loginToken = ""
+	     	//alert(xhr.status);
+	       	//alert(thrownError);
+	      }
+		});
+		
 		//var data = {"firstName":+$('#txtName').val(),"lastName":+$('#txtlastName').val(),"age":+$('#txtGender').val()};
-		localStorage.setItem('userInfo', 'true');
-		$.mobile.changePage('index.html#two');
+		//localStorage.setItem('userInfo', 'true');
+		//$.mobile.changePage('index.html#two');
 	    //$.ajax({
 	    //    url: "http://testing.hoenigwebdesign.com/dev/login.php?email="+$('#username').val()+"&password="+$('#password').val()+"&login=true",
 	    //    type: "POST",
@@ -84,16 +107,15 @@ $(document).ready(function(){
 		//	        console.log(data);
 	    //    },
 	    //    error: function (xhr, ajaxOptions, thrownError) {
-	    //    	alert(xhr.status);
+	    //		alert(xhr.status);
 	    //    	alert(thrownError);
 	    //    }
-	    //});
 	});
 	
 	$('.btnLogOut').click(function() {
-		alert('LogOut');
+		//alert('LogOut');
 		//var data = {"firstName":+$('#txtName').val(),"lastName":+$('#txtlastName').val(),"age":+$('#txtGender').val()};
-		localStorage.setItem('userInfo', 'null');
+		localStorage.setItem('userInfo', null);
 		$.mobile.changePage('index.html#seven');
 	    //$.ajax({
 	    //    url: "http://testing.hoenigwebdesign.com/dev/login.php?email="+$('#username').val()+"&password="+$('#password').val()+"&login=true",
@@ -113,6 +135,28 @@ $(document).ready(function(){
 	    //});
 	});
  });
+ 
+function setLoginToken(loginToken) {
+	if (loginToken != "") {
+		$.ajax({
+		  type: "GET",
+		  url: "http://nephcurebetaapi.azurewebsites.net/api/v1/Users",
+		  dataType: 'json',
+		  beforeSend: function(xhr, settings) { xhr.setRequestHeader('Authorization','Bearer ' + loginToken); },
+		  success: function(data, status) {
+		    //alert('success');
+		    //alert('The returned data', data);
+		    localStorage.setItem('userInfo', data);
+		    $.mobile.changePage('index.html#two');
+		  },
+	      error: function (xhr, ajaxOptions, thrownError) {
+	     	//alert('error');
+	     	//alert(xhr.status);
+	       	//alert(thrownError);
+	      }
+		});
+	}
+}
 
 function validateEmail(email) {
   var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -130,3 +174,4 @@ function loadFoooterLinks() {
 	+ "<li><a href='#one' data-role='button'>Create Profile</a></li>"
 	+ "</ul>");
 }
+
